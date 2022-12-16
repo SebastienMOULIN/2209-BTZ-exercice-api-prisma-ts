@@ -10,17 +10,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 model User {
-  id    Int     @id @default(autoincrement())
+  id    String @id  @unique  @default(uuid())
   email String  @unique
   name  String?
-  posts Post[]
+  collectionId String
+  books Book[]
 }
 
-model Post {
-  id        Int     @id @default(autoincrement())
+model Book {
+  id        String @id  @unique  @default(uuid())
   title     String
   content   String?
   published Boolean @default(false)
   author    User    @relation(fields: [authorId], references: [id])
-  authorId  Int
+  authorId  String
+  collectionId String
+  collection Collection @relation(fields: [collectionId], references: [id])
+}
+
+model Collection {
+id String @id  @unique  @default(uuid())
+name String
+createAt DateTime @default(now())
+updatedAt DateTime @updatedAt
+books Book[]
 }
